@@ -2,12 +2,13 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY requirements.txt /app
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY src ./src
+COPY src /app
+COPY tests /app/tests
 
 EXPOSE 80
 
-CMD ["python", "src/app.py"]
+CMD ["python", "app.py"]
