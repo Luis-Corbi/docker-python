@@ -3,4 +3,6 @@ pip
 autopep8
 
 # App
-flask
+Flask==2.0.1
+pytest==6.2.4
+flake8==3.9.2

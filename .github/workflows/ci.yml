@@ -1,0 +1,37 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build Docker image
+        run: docker build -t my-flask-app .
+
+      - name: Run Docker container
+        run: docker run -d -p 5000:5000 --name my-flask-app my-flask-app
+
+      - name: Lint the code
+        run: docker exec my-flask-app flake8 app.py
+
+      - name: Run tests
+        run: docker exec my-flask-app pytest
+
+      - name: Stop Docker container
+        run: docker stop my-flask-app
